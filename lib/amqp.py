@@ -10,16 +10,11 @@ class TornadoClient(object):
 
     def __init__(self, url):
         self.parameters = pika.URLParameters(url)
-        self.connecting = False
         self.connection = None
         self.channel = None
 
     def connect(self):
-        if self.connecting:
-            logger.info('already connecting')
-            return
         logger.info("connecting")
-        self.connecting = True
         self.connection = adapters.TornadoConnection(
             self.parameters, on_open_callback=self.on_connection_open)
         self.connection.add_on_close_callback(self.on_connection_closed)
@@ -27,7 +22,6 @@ class TornadoClient(object):
     def on_connection_open(self, connection):
         logger.info('connection opened')
         self.connection = connection
-        self.connecting = False
         logger.info('opening channel')
         connection.channel(self.on_channel_open)
 
