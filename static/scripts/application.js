@@ -33,7 +33,7 @@ $(function() {
         initialize: function(){
            this.listenTo(this.model, 'change:visible', function(){
                this.$el.slideToggle();
-           }, this); 
+           }, this);
         }
     });
     var LogChannelView = Backbone.View.extend({
@@ -60,18 +60,18 @@ $(function() {
     });
     var LogRecordCollection = Backbone.Collection.extend({model: LogRecord});
     var LogChannelCollection = Backbone.Collection.extend({model: LogChannel});
-    
+
     // instances
     var logRecordStore = new LogRecordCollection;
     var logChannelStore = new LogChannelCollection;
-    
-    var service = new Service('ws://localhost:8888/ws');
+
+    var service = new Service('ws://localhost:8888/logrecordsocket');
 
 
     logRecordStore.on('add', function(logRecord, collection, event){
         var view = new LogRecordView({model: logRecord});
         $("#log-records").append(view.render().el);
-        
+
     });
     logChannelStore.on('add', function(logChannel, collection, event){
         var view = new LogChannelView({model: logChannel});
