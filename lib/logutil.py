@@ -37,8 +37,11 @@ class AmqpHandler(logging.Handler):
         message = self.format(record)
         amqp_logger.debug('publish %s', message)
         self.amqp_client.publish(
-            'amq.topic', "logging.%s" % record.levelname, message,
-            content_type="application/json")
+            'amq.topic',
+            "logging.%s" % record.levelname,
+            message,
+            content_type="application/json"
+        )
 
 
 class ContextFilter(logging.Filter):

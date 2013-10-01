@@ -1,1 +1,1 @@
-from .notifywebsockethandler import NotifyWebSocketHandler
+from .logrecordsocket import LogRecordSocket
