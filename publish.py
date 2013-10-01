@@ -3,7 +3,7 @@ import logging
 
 import config
 from lib.amqp import BlockingClient
-from lib.logutil import AmqpHandler
+from lib import logutil
 
 
 def logging_config():
@@ -14,7 +14,7 @@ def logging_config():
     logging.getLogger('pika').setLevel(logging.WARNING)
 
     amqp_client = BlockingClient(config.amqp["url"])
-    amqp_handler = AmqpHandler(amqp_client)
+    amqp_handler = logutil.AmqpHandler(amqp_client)
 
     root_logger = logging.getLogger()
     root_logger.addHandler(amqp_handler)
@@ -22,14 +22,17 @@ def logging_config():
 
 if __name__ == "__main__":
     logging_config()
-    logger = logging.getLogger("foo.bar")
-    logger.info('test')
-    try:
-        raise Exception('dummy')
-    except:
-        logger.exception("dummy test")
+    logger = logging.getLogger()
 
-    import time
-    for i in range(0, 100):
-        time.sleep(2)
-        logger.info("message blaster [%s]", i)
+    with logutil.context(
+            customer_id=45,
+            order_id=123):
+        logger.info('request order create')
+
+        with logutil.context(merchant_id=1):
+            logger.info('order created')
+
+        with logutil.context(merchant_id=2):
+            logger.info('order created')
+
+        logger.info('mail send')

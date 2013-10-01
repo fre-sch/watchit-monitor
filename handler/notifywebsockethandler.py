@@ -24,9 +24,9 @@ class NotifyWebSocketHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         logger.info("websocket closed %s", id(self))
         self.application.web_sockets.remove(self)
-        self.stop_pika_consumer()
+        self.stop_amqp_consumer()
 
-    def stop_pika_consumer(self):
+    def stop_amqp_consumer(self):
         pika_client = self.application.pika_client
         pika_client.channel.basic_cancel(consumer_tag=self.consumer_tag)
 
@@ -36,7 +36,7 @@ class NotifyWebSocketHandler(tornado.websocket.WebSocketHandler):
         def queue_bindok(method):
             logger.info('queue bound')
             amqp_client.channel.basic_consume(
-                self.on_pika_message,
+                self.on_amqp_message,
                 self.queue_name,
                 exclusive=True,
                 consumer_tag=self.consumer_tag,
@@ -49,7 +49,10 @@ class NotifyWebSocketHandler(tornado.websocket.WebSocketHandler):
                 queue_bindok, self.queue_name, 'collins.logging', '*')
 
         amqp_client.channel.queue_declare(
-            queue_declareok, self.queue_name, durable=False, auto_delete=True)
+            queue_declareok, self.queue_name,
+            durable=False, auto_delete=True)
 
-    def on_pika_message(self, chan, meth, prop, body):
+    def on_amqp_message(self, chan, meth, prop, body):
+        response = u"""{{"jsonrpc":"2.0","method":"logrecord","params":{params},"id":{id}}}""".format(
+            params=body, id=meth.delivery_tag)
         self.write_message(body)

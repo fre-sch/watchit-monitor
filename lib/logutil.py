@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from datetime import datetime
 import logging
 import ujson
@@ -38,3 +39,26 @@ class AmqpHandler(logging.Handler):
         self.amqp_client.publish(
             'collins.logging', "logging", message,
             content_type="application/json")
+
+
+class ContextFilter(logging.Filter):
+    def __init__(self, context):
+        self.context = context
+
+    def filter(self, record):
+        try:
+            record.context.update(self.context)
+        except AttributeError:
+            record.context = self.context
+        return True
+
+
+@contextmanager
+def context(**kwargs):
+    root_logger = logging.getLogger()
+    context_filter = ContextFilter(kwargs)
+    for handler in root_logger.handlers:
+        handler.addFilter(context_filter)
+    yield
+    for handler in root_logger.handlers:
+        handler.removeFilter(context_filter)
