@@ -25,20 +25,32 @@
     </div>
 
     <div class="container">
-      <div class="starter-template">
-        <div id="logs">&nbsp;
+      <div class="row">
+        <div class="col-md-4">
+            <div id="log-channels" class="list-group">
+            </div>
+        </div>
+        <div id="log-records" class="col-md-8">
         </div>
       </div>
     </div>
 
-    <script id="logrecord-tpl" type="text/x-underscore-template">
+
+    <script id="log-channel-tpl" type="text/template">
+            <span class="glyphicon glyphicon-ok-sign"></span>
+            <%=name%>
+            <span class="badge"><%=numLogRecords%></span>
+
+    </script>
+
+    <script id="log-record-tpl" type="text/template">
       <div class="logrecord panel panel-default">
         <div class="panel-heading">
-          <span class="logrecord-levelname"><%=this.levelname%></span>
+          <span class="logrecord-levelname"><%=levelname%></span>
           &nbsp;
-          <span class="logrecord-message"><%=this.message%></span>
+          <span class="logrecord-message"><%=message%></span>
           &nbsp;-&nbsp;
-          <time class="logrecord-created" datetime="<%=it.created%>"><%=it.created%></time>
+          <time class="logrecord-created" datetime="<%=created%>"><%=created%></time>
           <div class="pull-right">
             <span class="glyphicon glyphicon-chevron-down"></span>
           </div>
@@ -46,16 +58,16 @@
         <div class="panel-body" style="display:none">
           <dl class="dl-horizontal">
             <dt>module</dt>
-            <dd><%-it.module%></dd>
+            <dd><%-module%></dd>
             <dt>filename</dt>
-            <dd><%-it.filename%></dd>
+            <dd><%-filename%></dd>
             <dt>lineno</dt>
-            <dd><%-it.lineno%></dd>
+            <dd><%-lineno%></dd>
             <dt>funcname</dt>
-            <dd><%-it.funcName%></dd>
+            <dd><%-funcName%></dd>
           </dl>
-          <% if (it.exc_text) { %>
-          <pre><%-it.exc_text%></pre>
+          <% if (exc_text) { %>
+          <pre><%-exc_text%></pre>
           <% } %>
         </div>
       </div>

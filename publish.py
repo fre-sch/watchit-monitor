@@ -36,3 +36,17 @@ if __name__ == "__main__":
             logger.info('order created')
 
         logger.info('mail send')
+
+    logger = logging.getLogger('foobar')
+    with logutil.context(
+            customer_id=45,
+            order_id=123):
+        logger.info('request order create')
+
+        with logutil.context(merchant_id=1):
+            logger.info('order created')
+
+        with logutil.context(merchant_id=2):
+            logger.info('order created')
+
+        logger.info('mail send')

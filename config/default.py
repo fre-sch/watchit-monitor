@@ -5,7 +5,7 @@ from os.path import join as pathjoin
 base_path = realpath(pathjoin(dirname(__file__), '..'))
 
 amqp = dict(
-    url="amqp://guest:guest@server:5672/%2F",
+    url="amqp://admin:12Mode@api.collins.local:5672/%2F",
 )
 
 tornado = dict(

@@ -37,7 +37,7 @@ class AmqpHandler(logging.Handler):
         message = self.format(record)
         amqp_logger.debug('publish %s', message)
         self.amqp_client.publish(
-            'collins.logging', "logging", message,
+            'amq.topic', "logging.%s" % record.levelname, message,
             content_type="application/json")
 
 

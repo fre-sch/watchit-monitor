@@ -18,16 +18,14 @@ class NotifyWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def open(self):
         logger.info('websocket open %s', id(self))
-        self.application.web_sockets.append(self)
         self.start_amqp_consumer()
 
     def on_close(self):
         logger.info("websocket closed %s", id(self))
-        self.application.web_sockets.remove(self)
         self.stop_amqp_consumer()
 
     def stop_amqp_consumer(self):
-        pika_client = self.application.pika_client
+        pika_client = self.application.amqp_client
         pika_client.channel.basic_cancel(consumer_tag=self.consumer_tag)
 
     def start_amqp_consumer(self):
@@ -46,7 +44,7 @@ class NotifyWebSocketHandler(tornado.websocket.WebSocketHandler):
         def queue_declareok(method):
             logger.info('queue declared')
             amqp_client.channel.queue_bind(
-                queue_bindok, self.queue_name, 'collins.logging', '*')
+                queue_bindok, self.queue_name, 'amq.topic', 'logging.*')
 
         amqp_client.channel.queue_declare(
             queue_declareok, self.queue_name,
@@ -55,4 +53,4 @@ class NotifyWebSocketHandler(tornado.websocket.WebSocketHandler):
     def on_amqp_message(self, chan, meth, prop, body):
         response = u"""{{"jsonrpc":"2.0","method":"logrecord","params":{params},"id":{id}}}""".format(
             params=body, id=meth.delivery_tag)
-        self.write_message(body)
+        self.write_message(response)
