@@ -17,8 +17,6 @@ class JsonFormatter(logging.Formatter):
         try:
             record_data = vars(record)
             record_data.pop("exc_info")
-            record_data["created"] = \
-                datetime.fromtimestamp(record_data["created"]).isoformat()
             return ujson.dumps(record_data)
         except:
             amqp_logger.debug("ujson.dumps error: %s", vars(record))
