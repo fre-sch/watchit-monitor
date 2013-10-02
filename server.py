@@ -13,6 +13,7 @@ logging.config.dictConfig(config.log)
 logger = logging.getLogger('application')
 handlers = [
     URLSpec(r"/logrecordsocket", LogRecordSocket, name="logrecordsocket"),
+    URLSpec(r"/", tornado.web.RedirectHandler, {"url": "/index.html"}),
     URLSpec(r"/(.*)", tornado.web.StaticFileHandler, dict(
         path=config.tornado.pop('static_path')
     ), name='static'),
