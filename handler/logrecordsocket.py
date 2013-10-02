@@ -29,7 +29,6 @@ class LogRecordSocket(tornado.websocket.WebSocketHandler):
         self.amqp_client.channel.basic_cancel(consumer_tag=self.consumer_tag)
 
     def start_amqp_consumer(self):
-        logger.info("start consumer")
         self.amqp_client.channel.queue_declare(
             self.queue_declareok,
             self.queue_name,
@@ -47,7 +46,7 @@ class LogRecordSocket(tornado.websocket.WebSocketHandler):
         )
 
     def queue_bindok(self, method):
-        logger.info('queue bound')
+        logger.info('queue bound, start consuming')
         self.amqp_client.channel.basic_consume(
             self.on_amqp_message,
             self.queue_name,
