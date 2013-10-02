@@ -20,56 +20,46 @@
           <a class="navbar-brand" href="#">Dashboard</a>
         </div>
         <div class="collapse navbar-collapse">
-          <p class="navbar-text">Connection status: <span id="status" class="badge">initializing</span></p>
+          <div id="connection" class="navbar-text">Connection status: <span class="badge">initializing</span></div>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="font-size: 85%;">
       <div class="row">
         <div class="col-md-4">
-            <div id="log-channels" class="list-group">
-            </div>
+          <div id="log-channels" class="list-group">
+          </div>
         </div>
         <div id="log-records" class="col-md-8">
         </div>
       </div>
     </div>
 
-
     <script id="log-channel-tpl" type="text/template">
-            <span class="glyphicon glyphicon-ok-sign"></span>
-            <%=name%>
-            <span class="badge"><%=numLogRecords%></span>
-
+      <span class="glyphicon glyphicon-ok-sign"></span>
+      <%=data.name%>
+      <span class="badge"><%=data.numLogRecords%></span>
     </script>
 
     <script id="log-record-tpl" type="text/template">
-      <div class="logrecord panel panel-default">
-        <div class="panel-heading">
-          <span class="logrecord-levelname"><%=levelname%></span>
-          &nbsp;
-          <span class="logrecord-message"><%=message%></span>
-          &nbsp;-&nbsp;
-          <time class="logrecord-created" datetime="<%=created%>"><%=created%></time>
-          <div class="pull-right">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-          </div>
+      <div class="log-record-head row">
+        <div class="col-md-1">
+          <span class="badge"><%=data.levelname%></span>
         </div>
-        <div class="panel-body" style="display:none">
-          <dl class="dl-horizontal">
-            <dt>module</dt>
-            <dd><%-module%></dd>
-            <dt>filename</dt>
-            <dd><%-filename%></dd>
-            <dt>lineno</dt>
-            <dd><%-lineno%></dd>
-            <dt>funcname</dt>
-            <dd><%-funcName%></dd>
-          </dl>
-          <% if (exc_text) { %>
-          <pre><%-exc_text%></pre>
-          <% } %>
+        <div class="col-md-2" style="white-space:nowrap;"><%=new Date(parseInt(data.created)*1000).toLocaleString()%></div>
+        <div class="col-md-2" title="<%=data.name%>" style="overflow:hidden"><%=data.name%></div>
+        <div class="col-md-7" title="<%=data.message%>" style="overflow:hidden"><%=data.message%></div>
+      </div>
+      <div class="log-record-body well well-sm">
+        <% if (data.exc_text) { %>
+        <pre><%-data.exc_text%></pre>
+        <% } %>
+        <% for (var p in data) { if (p == "exc_text") continue; %>
+        <div class="row">
+          <div class="col-md-2"><%=p%>:</div>
+          <div class="col-md-10"><%-data[p]%></div>
         </div>
+        <% } %>
       </div>
     </script>
 
