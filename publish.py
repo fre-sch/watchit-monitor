@@ -22,31 +22,26 @@ def logging_config():
 
 if __name__ == "__main__":
     logging_config()
-    logger = logging.getLogger()
+    logger = logging.getLogger("wsgi.checkoutapi")
 
     with logutil.context(
             customer_id=45,
             order_id=123):
-        logger.info('request order create')
+        logger.debug('request order create')
 
+        logger = logging.getLogger("consumer.merchantapi.orderreceive")
         with logutil.context(merchant_id=1):
             logger.info('order created')
 
         with logutil.context(merchant_id=2):
             logger.info('order created')
 
+        with logutil.context(merchant_id=3):
+            try:
+                raise Exception("merchant not reached")
+            except:
+                logger.exception("merchant not reached")
+
+        logger = logging.getLogger("collin.libs.mail")
         logger.info('mail send')
 
-    logger = logging.getLogger('foobar')
-    with logutil.context(
-            customer_id=45,
-            order_id=123):
-        logger.info('request order create')
-
-        with logutil.context(merchant_id=1):
-            logger.info('order created')
-
-        with logutil.context(merchant_id=2):
-            logger.info('order created')
-
-        logger.info('mail send')
