@@ -14,6 +14,7 @@ class ExcludeFilter(logging.Filter):
 
 class JsonFormatter(logging.Formatter):
     def format(self, record):
+        super(JsonFormatter, self).format(record)
         try:
             record_data = vars(record)
             record_data.pop("exc_info")
