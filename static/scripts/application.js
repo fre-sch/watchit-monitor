@@ -30,26 +30,26 @@ $(function() {
 
     // views
     var LogRecordView = Backbone.View.extend({
-        className: "row log-record",
+        className: "log-record",
         template: _.template($("#log-record-tpl").html(), false, {"variable": "data"}),
         render: function(){
             this.$el.html(this.template(this.model.toJSON()));
             this.$el.toggle(this.model.get("visible"));
             this.$el.find(".log-record-body").hide();
             var levelnameClass = {
-                INFO: "alert-info",
+                INFO: "",
                 WARNING: "alert-warning",
                 ERROR:"alert-danger",
                 CRITICAL: "alert-danger",
                 FATAL: "alert-danger"
             }[this.model.get("levelname")];
             if (levelnameClass)
-                this.$el.find(".badge").addClass(levelnameClass);
+                this.$el.find(".log-record-head").addClass(levelnameClass);
             return this;
         },
         initialize: function(){
            this.listenTo(this.model, 'change:visible', function(){
-               this.$el.fadeToggle("fast");
+               this.$el.toggle();
            }, this);
         }
     });
@@ -78,7 +78,7 @@ $(function() {
         }
     });
     var ConnectionView = Backbone.View.extend({
-        el: $("#connection"),
+        el: "#connection",
         setStatus: function(status) {
             var $status_badge = this.$el.find("span.badge");
             $status_badge.text(status);
@@ -86,7 +86,9 @@ $(function() {
     });
 
     // collections
-    var LogRecordCollection = Backbone.Collection.extend({model: LogRecord});
+    var LogRecordCollection = Backbone.Collection.extend({
+        model: LogRecord,
+    });
     var LogChannelCollection = Backbone.Collection.extend({model: LogChannel});
 
     // instances
@@ -95,18 +97,18 @@ $(function() {
     var logChannelStore = new LogChannelCollection;
 
     var service = new Service('ws://localhost:8888/logrecordsocket');
-    $(service).on("socket-connect", function() {
-        console.info("socket-connect");
-        connectionView.setStatus('connected');
-    });
-    $(service).on("socket-close", function() {
-        console.info("socket-close");
-        connectionView.setStatus('closed');
-    });
-    $(service).on("socket-error", function() {
-        console.info("socket-error");
-        connectionView.setStatus('error');
-    });
+    // $(service).on("socket-connect", function() {
+    //     console.info("socket-connect");
+    //     connectionView.setStatus('connected');
+    // });
+    // $(service).on("socket-close", function() {
+    //     console.info("socket-close");
+    //     connectionView.setStatus('closed');
+    // });
+    // $(service).on("socket-error", function() {
+    //     console.info("socket-error");
+    //     connectionView.setStatus('error');
+    // });
 
 
     logRecordStore.on('add', function(logRecord, collection, event){
@@ -135,10 +137,7 @@ $(function() {
     service.connect();
 
     $("body").on("click", ".log-record .log-record-head", function() {
-        $(this).next().slideToggle("fast");
-        $(this).find("span.glyphicon")
-            .toggleClass("glyphicon-chevron-right")
-            .toggleClass("glyphicon-chevron-down")
+        $(this).next().toggle();
     });
 
 });

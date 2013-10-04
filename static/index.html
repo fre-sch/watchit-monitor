@@ -3,34 +3,79 @@
   <head>
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"/>
-    <script type="text/javascript" src="scripts/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="scripts/jquery.timeago.js"></script>
-    <script type="text/javascript" src="scripts/underscore.js"></script>
-    <script type="text/javascript" src="scripts/backbone.js"></script>
-    <script type="text/javascript" src="scripts/service.js"></script>
-    <script type="text/javascript" src="scripts/application.js"></script>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/scripts/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/scripts/jquery.timeago.js"></script>
+    <script type="text/javascript" src="/scripts/underscore.js"></script>
+    <script type="text/javascript" src="/scripts/backbone.js"></script>
+    <script type="text/javascript" src="/scripts/service.js"></script>
+    <script type="text/javascript" src="/scripts/application.js"></script>
+    <style type="text/css">
+    #main {
+      position:absolute;
+      top: 0;
+      bottom: 0;
+      left:0;
+      right: 0;
+    }
+    #head {
+      position: absolute;
+      top:0;
+      left: 0;
+      right: 0;
+    }
+    #body {
+      position: absolute;
+      top: 41px;
+      bottom: 0;
+      left:0;
+      right:0;
+    }
+    .tab-panel {
+      position: absolute;
+      top:8px;
+      bottom:8px;
+      left:8px;
+      right:8px;
+    }
+    .log-record-head {
+      border-bottom: 1px dotted #ddd;
+      line-height: 2em;
+    }
+    .log-record-body {
+      border-bottom: 1px dotted #ddd;
+      background-color: #f5f5f5;
+      padding: 10px 15px;
+    }
+    .log-record:last-child .log-record-head{
+      border-bottom: none;
+    }
+    .log-record:last-child .log-record-body {
+      border-top: 1px dotted #ddd;
+    }
+    </style>
   </head>
-  <body>
+  <body style="font-size:1.2em">
 
-    <div class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Dashboard</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <div id="connection" class="navbar-text">Connection status: <span class="badge">initializing</span></div>
-        </div>
-    </div>
-
-    <div class="container" style="font-size: 85%;">
-      <div class="row">
-        <div class="col-md-4">
-          <div id="log-channels" class="list-group">
+    <div id="main">
+      <div id="head">
+        <ul class="nav nav-tabs">
+          <li><a href="#logging-main" data-toggle="tab">Main</a></li>
+        </ul>
+      </div>
+      <div id="body">
+        <div id="logging-main" class="tab-panel">
+          <div style="position:absolute;top:0;bottom:0;left:0;width:300px;overflow:auto">
+            <div class="panel panel-default">
+              <div class="panel-heading">Channels</div>
+              <div id="log-channels" class="list-group"></div>
+            </div>
           </div>
-        </div>
-        <div id="log-records" class="col-md-8">
+          <div style="position:absolute;top:0;bottom:0;left:310px;right:0;overflow:auto;border:1px solid #ddd">
+            <div id="log-records" class="container">
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -43,14 +88,12 @@
 
     <script id="log-record-tpl" type="text/template">
       <div class="log-record-head row">
-        <div class="col-md-1">
-          <span class="badge"><%=data.levelname%></span>
-        </div>
+        <div class="col-md-1"><%=data.levelname%></div>
         <div class="col-md-2" style="white-space:nowrap;"><%=new Date(parseInt(data.created)*1000).toLocaleString()%></div>
-        <div class="col-md-2" title="<%=data.name%>" style="overflow:hidden"><%=data.name%></div>
-        <div class="col-md-7" title="<%=data.message%>" style="overflow:hidden"><%=data.message%></div>
+        <div class="col-md-3" title="<%=data.name%>" style="overflow:hidden"><%=data.name%></div>
+        <div class="col-md-6" title="<%=data.message%>" style="overflow:hidden"><%=data.message%></div>
       </div>
-      <div class="log-record-body well well-sm">
+      <div class="log-record-body row">
         <% if (data.exc_text) { %>
         <pre><%-data.exc_text%></pre>
         <% } %>
