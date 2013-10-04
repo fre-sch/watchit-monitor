@@ -6,6 +6,9 @@ Real time logging monitor built with tornado, websockets and pika. Also includin
 Requirements
 ------------
 
+Aside from the required python modules listed in `watchit-monitor/requirements`,
+you will need these:
+
 * python 2.7
 * rabbitmq server
 
