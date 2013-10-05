@@ -19,7 +19,7 @@ Setup
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
-shell> pip install -r requirements
+shell> pip install -r requirements # alternatively: pip install requirements.pybundle
 shell> echo 'from .default import *' > config/local.py
 shell> editor config/local.py # setup for your environment (rabbitmq, etc)
 ```
