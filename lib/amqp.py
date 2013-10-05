@@ -19,15 +19,12 @@ class TornadoClient(object):
             self.parameters, on_open_callback=self.on_connection_open)
         self.connection.add_on_close_callback(self.on_connection_closed)
 
+    def open_channel(self, callback):
+        logger.info('opening channel')
+        self.connection.channel(callback)
+
     def on_connection_open(self, connection):
         logger.info('connection opened')
-        self.connection = connection
-        logger.info('opening channel')
-        connection.channel(self.on_channel_open)
-
-    def on_channel_open(self, channel):
-        logger.info('channel opened')
-        self.channel = channel
 
     def on_connection_closed(self, connection):
         logger.info("connection closed")
@@ -55,3 +52,29 @@ class BlockingClient(object):
 
     def publish(self, ex, rk, msg, **kwargs):
         self.channel.basic_publish(ex, rk, msg, pika.BasicProperties(**kwargs))
+
+
+class AsyncClient(object):
+
+    def __init__(self, url):
+        self.parameters = pika.URLParameters(url)
+        self.connection = None
+        self.channel = None
+
+    def connect(self):
+        logger.info("connecting")
+        self.connection = adapters.SelectConnection(
+            self.parameters, on_open_callback=self.on_connection_open)
+        self.connection.add_on_close_callback(self.on_connection_closed)
+        try:
+            self.connection.ioloop.start()
+        except KeyboardInterrupt:
+            self.connection.close()
+            self.connection.ioloop.start()
+
+    def on_connection_open(self, connection):
+        logger.info('connection opened')
+        self.connection = connection
+
+    def on_connection_closed(self, connection):
+        logger.info("connection closed")
