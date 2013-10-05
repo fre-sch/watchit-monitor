@@ -38,13 +38,13 @@ shell> ./server.py
 ```
 
 Open your browser and open `http://localhost:8888/`.
-Create some logging messages with `./publish.py`
+Create some logging messages with `./genlogs.py`
 
 ```
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
-shell> ./publish.py
+shell> ./genlogs.py -h
 ```
 
 Watch the logging messages appear in your browser :)
