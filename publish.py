@@ -1,9 +1,25 @@
 #!/usr/bin/env python
 import logging
-
 import config
 from lib.amqp import BlockingClient
 from lib import logutil
+import argparse
+import random
+
+
+parser = argparse.ArgumentParser(description="generate some log messages")
+parser.add_argument(
+    "-n", type=int, action='store', default=1,
+    help="generate <n> log messages")
+parser.add_argument(
+    "-l", type=str.split, action="store", default=["root"],
+    help="list of logger names (space separated)")
+parser.add_argument(
+    "-t", type=str.split, action="store", default=["info"],
+    help="list of logging levels (space separated)")
+parser.add_argument(
+    "message", type=str, action="store", default="default message {i}",
+    help="log message (available format var {i})")
 
 
 def logging_config():
@@ -22,26 +38,9 @@ def logging_config():
 
 if __name__ == "__main__":
     logging_config()
-    logger = logging.getLogger("wsgi.checkoutapi")
-
-    with logutil.context(
-            customer_id=45,
-            order_id=123):
-        logger.debug('request order create')
-
-        logger = logging.getLogger("consumer.merchantapi.orderreceive")
-        with logutil.context(merchant_id=1):
-            logger.info('order created')
-
-        with logutil.context(merchant_id=2):
-            logger.info('order created')
-
-        with logutil.context(merchant_id=3):
-            try:
-                raise Exception("merchant not reached")
-            except:
-                logger.exception("merchant not reached")
-
-        logger = logging.getLogger("collin.libs.mail")
-        logger.info('mail send')
+    args = parser.parse_args()
+    for i in range(1, args.n):
+        logger = logging.getLogger(random.choice(args.l))
+        level = random.choice(args.t)
+        getattr(logger, level)(args.message.format(i=i))
 
