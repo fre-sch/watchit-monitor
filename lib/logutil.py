@@ -34,7 +34,6 @@ class AmqpHandler(logging.Handler):
 
     def emit(self, record):
         message = self.format(record)
-        amqp_logger.debug('publish %s', message)
         self.amqp_client.publish(
             'amq.topic',
             "logging.%s" % record.levelname,
