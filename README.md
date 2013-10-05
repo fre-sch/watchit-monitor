@@ -15,7 +15,7 @@ you will need these:
 Setup
 -----
 
-```
+```bash
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
@@ -30,7 +30,7 @@ Run
 Make sure you set your RabbitMQ server in `config/local.py` and it is running.
 Start the tornado server.
 
-```
+```bash
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
@@ -40,7 +40,7 @@ shell> ./server.py
 Open your browser and open `http://localhost:8888/`.
 Create some logging messages with `./genlogs.py`
 
-```
+```bash
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
