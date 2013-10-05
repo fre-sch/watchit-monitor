@@ -16,15 +16,16 @@ class LogRecordSocket(tornado.websocket.WebSocketHandler):
             application, request, **kwargs)
         self.amqp_client = application.amqp_client
         self.amqp_channel = None
-        self.consumer_tag = "mon.websocket.{}".format(uuid())
+        self.socket_id = uuid()
+        self.consumer_tag = "mon.websocket.{}".format(self.socket_id)
         self.queue_name = self.consumer_tag
 
     def open(self):
-        logger.info('websocket open %s', id(self))
+        logger.info('websocket open %s', self.socket_id)
         self.amqp_client.open_channel(self.start_amqp_consumer)
 
     def on_close(self):
-        logger.info("websocket closed %s", id(self))
+        logger.info("websocket closed %s", self.socket_id)
         self.stop_amqp_consumer()
 
     def stop_amqp_consumer(self):
@@ -41,7 +42,7 @@ class LogRecordSocket(tornado.websocket.WebSocketHandler):
             auto_delete=True
         )
 
-    def on_cancel(self):
+    def on_cancel(self, method):
         self.amqp_channel.close()
 
     def on_queue_declareok(self, method):
