@@ -39,7 +39,7 @@ def logging_config():
 if __name__ == "__main__":
     logging_config()
     args = parser.parse_args()
-    for i in range(1, args.n):
+    for i in range(args.n):
         logger = logging.getLogger(random.choice(args.l))
         level = random.choice(args.t)
         getattr(logger, level)(args.message.format(i=i))
