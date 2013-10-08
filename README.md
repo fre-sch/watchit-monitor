@@ -18,6 +18,7 @@ Setup
 ```bash
 shell> cd watchit-monitor
 shell> virtualenv env
+shell> pwd > env/lib/python2.7/site-packages/project.pth
 shell> source env/bin/activate
 shell> pip install -r requirements # alternatively: pip install requirements.pybundle
 shell> echo 'from .default import *' > config/local.py
@@ -34,17 +35,17 @@ Start the tornado server.
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
-shell> ./server.py
+shell> ./bin/server.py
 ```
 
 Open your browser and open `http://localhost:8888/`.
-Create some logging messages with `./genlogs.py`
+Create some logging messages with `./bin/genlogs.py`
 
 ```bash
 shell> cd watchit-monitor
 shell> virtualenv env
 shell> source env/bin/activate
-shell> ./genlogs.py -h
+shell> ./bin/genlogs.py -h
 ```
 
 Watch the logging messages appear in your browser :)
